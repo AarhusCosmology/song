@@ -429,6 +429,7 @@ struct perturbs2
   short has_source_E;          /**< Should we store in ppt2->sources the source function for the CMB E-polarization? */
   short has_source_B;          /**< Should we store in ppt2->sources the source function for the CMB B-polarization? */
   short has_source_delta_cdm;  /**< Should we store in ppt2->sources the density contrast of cold dark matter? */
+  short has_source_delta_b;  /**< Should we store in ppt2->sources the density contrast of cold dark matter? */
   short has_source_M;          /**< Should we store in ppt2->sources the source function for the magnetic field generated
                                at recombination? Includes only the m=1 dipole. For reference, see Fidler, Pettinari &
                                Pitrou 2015. */
@@ -503,6 +504,7 @@ struct perturbs2
   int index_tp2_E;             /**< Beginning of the photon E-mode hierarchy in the ppt2->sources array */
   int index_tp2_B;             /**< Beginning of the photon B-mode hierarchy in the ppt2->sources array */
   int index_tp2_delta_cdm;     /**< Index for the second-order density contrast of cold dark matter in the ppt2->sources array */
+  int index_tp2_delta_b;     /**< Index for the second-order density contrast of cold dark matter in the ppt2->sources array */
   int index_tp2_M;             /**< Index for the magnetic field source in the ppt2->sources array */
 
   int n_sources_T;           /**< Number of sources to be computed for photon temperature */
@@ -1154,6 +1156,7 @@ struct perturbs2
    * the perturbations2.c module without having to do a full run.
    */
   short k_out_mode;
+  short only_k1k2;
 
   //@}
 
