@@ -44,7 +44,7 @@ class SongBinary:
             self.mapping.append(tmp[1:])
             line = f.readline()
         f.close()
-        
+
     def read_block(self,blocknumber):
         """
         Read block [blocknumber] from the binary file using the binary map
@@ -74,11 +74,11 @@ class SongBinary:
         names = names.reshape(numsources,-1)
         name_array = []
         for name in names:
-            name = name[name.nonzero()].tostring()
+            name = name[name.nonzero()].tostring().decode()
             name_array.append(name)
         return name_array
 
-    
+
 class Fixedk1k2File(SongBinary):
     """
     This class is used for accessing SONG binary files for fixed k1 and k2.
@@ -129,7 +129,7 @@ class Fixedk1k2File(SongBinary):
                 val = self.read_block(18+i)
                 #Case of fized k1 and k2. Reshape matrix:
                 return val.reshape(len(self.tau),len(self.k3))
-    
+
 
 class FixedTauFile(SongBinary):
     """
@@ -154,7 +154,7 @@ class FixedTauFile(SongBinary):
         self.get_binary_mapping()
         tmp = self.read_block(0)
         self.header = tmp[tmp.nonzero()].tostring()
-        
+
         #Case of fixed tau
         self.k1 = self.read_block(8)
         self.k2 = [self.k1[0:i+1] for i in range(len(self.k1))]
@@ -165,9 +165,9 @@ class FixedTauFile(SongBinary):
         #k3 is naturally a list of lists of numpy arrays. However, it is easier to deal with a single list,
         #so we will use a 2d array to access the list.
         #Create lower triangular matrix such that self.flatidx[index_k1][index_k2] is the index in the flattened list.
-        N = len(self.k1)
+        N = self.k1.shape[0]
         self.flatidx = -np.ones((N,N),dtype='int')
-        self.flatidx[np.tril_indices(N)] = range(0,N*(N+1)/2)
+        self.flatidx[np.tril_indices(N)] = range(0,N*(N+1)//2)
         #Read the flattened lower triangular matrix of k3 sizes and form the cumulative sum.
         #We use [:-1] not to get the total number, which would result in an empty list after np.split()
         self.k3sizes_cumsum = self.read_block(9)[:-1].cumsum()
@@ -197,7 +197,7 @@ class FixedTauFile(SongBinary):
                 val = self.read_block(16+i)
                 #Case of fixed tau: do same split as k3:
                 return np.split(val,self.k3sizes_cumsum)
-                
+
 
 class BispectraFileCMB(SongBinary):
     """
@@ -222,7 +222,7 @@ class BispectraFileCMB(SongBinary):
         self.get_binary_mapping()
         tmp = self.read_block(0)
         self.header = tmp[tmp.nonzero()].tostring()
-        
+
         #Case of fixed tau
         self.l1 = self.read_block(3)
         self.l2 = [self.l1[0:i+1] for i in range(len(self.l1))]
